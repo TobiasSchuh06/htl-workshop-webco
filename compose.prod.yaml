@@ -9,7 +9,7 @@ services:
     environment:
       APP_ENV: PROD
       APP_DEBUG: 0
-      DATABASE_URL: "postgresql://htl-workshop:QR5FCYWwps8Z@database:5432/htl-workshop?serverVersion=16&charset=utf8"
+      DATABASE_URL: "postgresql://htl-workshop:--DB_PW--@database:5432/htl-workshop?serverVersion=16&charset=utf8"
       ALANCAPTCHA_API_KEY: "----"
     volumes:
       - ../htl-workshop-prod-data/uploads/:/var/www/html/public/uploads:rw
@@ -22,7 +22,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: htl-workshop
-      POSTGRES_PASSWORD: QR5FCYWwps8Z
+      POSTGRES_PASSWORD: --DB_PW--
       POSTGRES_USER: htl-workshop
     healthcheck:
       test: ["CMD", "pg_isready", "-d", "htl-workshop", "-U", "htl-workshop"]
