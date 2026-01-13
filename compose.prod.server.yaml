@@ -1,0 +1,40 @@
+services:
+  traefik:
+    image: traefik:v3.6.4
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+      - ./logs:/logs
+      - ./dynamic/:/etc/traefik/dynamic/:ro
+  symfony:
+    image: ghcr.io/--GH_USER--/htl-workshop:latest
+    container_name: symfony
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      DATABASE_URL: "postgresql://htl-workshop:--DB_PW--@database:5432/htl-workshop?serverVersion=16&charset=utf8"
+      ALANCAPTCHA_API_KEY: "----"
+    volumes:
+      - ../htl-workshop-data/uploads/:/var/www/html/public/uploads:rw
+    depends_on:
+      - database
+  database:
+    image: postgres:16-alpine
+    container_name: database
+    environment:
+      POSTGRES_DB: htl-workshop
+      POSTGRES_PASSWORD: --DB_PW--
+      POSTGRES_USER: htl-workshop
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "htl-workshop", "-U", "htl-workshop"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - ../htl-workshop-data/db/:/var/lib/postgresql/data:rw
