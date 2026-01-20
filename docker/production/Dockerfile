@@ -42,7 +42,7 @@ COPY  . .
 COPY --from=vendor /app/vendor ./vendor
 
 # Install assets
-RUN php bin/console importmap:install --no-interaction && php bin/console cache:clear --env=prod
+RUN php bin/console importmap:install --no-interaction && php bin/console asset-map:compile && php bin/console cache:clear --env=prod
 
 # Permissions
 RUN mkdir -p var/cache var/log && chown -R www-data:www-data var assets public
